@@ -1,0 +1,147 @@
+<!DOCTYPE html> 
+<html>     
+    <head>         
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">         
+        <title>Music Player Design</title>         
+        <link rel="stylesheet" href="style.css">      
+        <script src="https://kit.fontawesome.com/c6c611d8dc.js" crossorigin="anonymous"></script>     
+    </head>     
+    <body>         
+        <div class="container">             
+            <div class="music-player">                 
+                <nav class="nav">                     
+                    <div class="circle">                         
+                        <i class="fa-solid fa-angle-left"></i>                     
+                    </div>                     
+                    <div class="circle" id="togglePlaylist">                         
+                        <i class="fa-solid fa-bars"></i>                     
+                    </div>                 
+                </nav>                 
+                <img src="media/sk1.img" class="song-img" alt="Song Image">                 
+                <h1>Thodi Der</h1>                 
+                <p>Farhaan Saeed and Shreya Ghoshal</p>                 
+                <audio controls id="song">                     
+                    <source src="media/Thodi der.m4a" type="audio/mpeg">                 
+                </audio>                 
+                <input type="range" value="0" id="progress">                 
+                <div class="controls">                     
+                    <div><i class="fa-solid fa-backward"></i></div>                     
+                    <div onclick="playpause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>                     
+                    <div><i class="fa-solid fa-forward"></i></div>                 
+                </div>                  
+                              
+                <div class="playlist" id="playlist">                     
+                    <h2>Playlist</h2>                     
+                    <ul>                         
+                        <li>                             
+                            <span class="song-title">Thodi Der</span> -                              
+                            <span class="artist-name">Farhaan Saeed, Shreya Ghoshal</span>                             
+                            <span class="duration">3:45</span>                         
+                        </li>                         
+                        <li>                             
+                            <span class="song-title">Malang Sajana</span> -                              
+                            <span class="artist-name">Sachet Tandon, Parampara Tandon, Adil Shaikh Kumar</span>                             
+                            <span class="duration">4:05</span>                         
+                        </li>                         
+                        <li>                             
+                            <span class="song-title">Ranjhana Ve</span> -                              
+                            <span class="artist-name">Artist 3</span>                             
+                            <span class="duration">2:50</span>                         
+                        </li>                     
+                    </ul>                 
+                </div>             
+            </div>         
+        </div>          
+
+        <script>
+            let progress = document.getElementById("progress");
+            let song = document.getElementById("song");
+            let ctrlIcon = document.getElementById("ctrlIcon");
+
+            
+            const songs = [
+                {
+                    title: "Thodi Der",
+                    artist: "Farhaan Saeed, Shreya Ghoshal",
+                    file: "media/Thodi der.m4a",  
+                    duration: "3:45"
+                },
+                {
+                    title: "Malang Sajana",
+                    artist: "Sachet Tandon, Parampara Tandon, Adil Shaikh Kumar",
+                    file: "media/malang sajana.m4a",  
+                    duration: "4:05"
+                },
+                {
+                    title: "Ranjhana Ve",
+                    artist: "Artist 3",
+                    file: "media/Raanjhana_Ve.m4a",
+                    duration: "2:50"
+                }
+            ];
+
+            
+            song.onloadedmetadata = function () {
+                progress.max = song.duration;
+                progress.value = song.currentTime;
+            };
+
+            // Play/pause function
+            function playpause() {
+                if (ctrlIcon.classList.contains("fa-pause")) {
+                    song.pause();
+                    ctrlIcon.classList.remove("fa-pause");
+                    ctrlIcon.classList.add("fa-play");
+                } else {
+                    song.play();
+                    ctrlIcon.classList.add("fa-pause");
+                    ctrlIcon.classList.remove("fa-play");
+                }
+            }
+
+            
+            song.addEventListener('play', () => {
+                setInterval(() => {
+                    progress.value = song.currentTime;
+                }, 500);
+            });
+
+        
+            progress.onchange = function () {
+                song.currentTime = progress.value;
+                song.play();
+                ctrlIcon.classList.add("fa-pause");
+                ctrlIcon.classList.remove("fa-play");
+            };
+
+            
+            let togglePlaylistBtn = document.getElementById('togglePlaylist');
+            let playlist = document.getElementById('playlist');
+
+            togglePlaylistBtn.addEventListener('click', function () {
+                if (playlist.style.display === 'none' || playlist.style.display === '') {
+                    playlist.style.display = 'block';  
+                } else {
+                    playlist.style.display = 'none';  
+                }
+            });
+
+            
+            function loadSong(index) {
+                let selectedSong = songs[index];
+                song.src = selectedSong.file;
+                document.querySelector('h1').innerText = selectedSong.title;
+                document.querySelector('p').innerText = selectedSong.artist;
+                song.play();
+                ctrlIcon.classList.add("fa-pause");
+                ctrlIcon.classList.remove("fa-play");
+            }
+
+            
+            const playlistItems = document.querySelectorAll('.playlist li');
+            playlistItems.forEach((item, index) => {
+                item.addEventListener('click', () => loadSong(index));
+            });
+        </script>
+    </body> 
+</html>
